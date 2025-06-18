@@ -9,7 +9,6 @@
 static pid_t timer_pid = 0;
 
 void myalarm(int sec) {
-    // alarm(sec);
     if (timer_pid > 0) {
         kill(timer_pid, SIGTERM);
     }
@@ -21,7 +20,7 @@ void myalarm(int sec) {
     }
     if (pid == 0) {
         sleep(sec);
-        kill(getpid(), SIGALRM);
+        kill(getppid(), SIGALRM);
         exit(0);
     } else {
         if (signal(SIGCHLD, SIG_IGN) == SIG_ERR) {
