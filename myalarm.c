@@ -6,9 +6,8 @@
 #define BUFSIZE 256
 #define TIMEOUT 10
 
-static pid_t timer_pid = 0;
-
 void myalarm(int sec) {
+    static pid_t timer_pid = 0;
     if (timer_pid > 0) {
         kill(timer_pid, SIGTERM);
     }
