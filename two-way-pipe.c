@@ -79,6 +79,7 @@ int main(int argc, char *argv[]){
             perror("pipe write.");
             exit(1);
         }
+        close(fdc2p[1]);
         sem_signal(sid_parent); // parent can read
 
         sem_wait(sid_child); // wait for parent to send message
@@ -87,9 +88,9 @@ int main(int argc, char *argv[]){
             perror("pipe read.");
             exit(1);
         }
+        close(fdp2c[0]);
         printf("Message from parent process: \n\t%s\n", buf);
 
-        sem_signal(sid_child);
         exit(0);
     } else { // parent process
         close(fdc2p[1]);
@@ -100,6 +101,7 @@ int main(int argc, char *argv[]){
             perror("pipe write.");
             exit(1);
         }
+        close(fdp2c[1]);
         sem_signal(sid_child); // child can read
 
         sem_wait(sid_parent); // wait for child to send message
@@ -108,9 +110,9 @@ int main(int argc, char *argv[]){
             perror("pipe read.");
             exit(1);
         }
+        close(fdc2p[0]);
         printf("Message from child process: \n\t%s\n", buf);
 
-        sem_signal(sid_child);
         wait(&status);
     }
 
