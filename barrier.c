@@ -5,6 +5,7 @@
 #include<sys/sem.h>
 #include<sys/shm.h>
 #include<sys/wait.h>
+#include<unistd.h>
 
 #define NUM_PROCS 5
 
