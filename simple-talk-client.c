@@ -98,6 +98,7 @@ int main(int argc, char **argv) {
     }
 
     printf("connected\n");
+    myalarm(TIMEOUT);
 
     while (!is_timed_out && !is_ctrl_c) {
         FD_ZERO(&rfds);
