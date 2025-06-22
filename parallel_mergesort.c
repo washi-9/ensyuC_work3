@@ -15,8 +15,8 @@ void merge(int numbers[], int temp[], int left, int mid, int right);
 
 int numbers[NUM_ITEMS];
 int temp[NUM_ITEMS];
-int parent_numbers[NUM_ITEMS];
-int child_numbers[NUM_ITEMS];
+int parent_numbers[NUM_ITEMS/2+1];
+int child_numbers[NUM_ITEMS/2+1];
 // pipe
 int fd[2];
 int pid, status;
@@ -31,6 +31,10 @@ int main()
   for (i = 0; i < NUM_ITEMS; i++){
     numbers[i] = rand();
   }
+  // print unsorted array
+  printf("Unsorted array:\n");
+  for (i = 0; i < NUM_ITEMS; i++)
+    printf("%i\n", numbers[i]);
 
   if (pipe(fd) == -1) {
     perror("pipe failed.");
@@ -101,6 +105,8 @@ int main()
     c++;
     i++;
   }
+  // print sorted array
+  printf("Sorted array:\n");
   for (i = 0; i < NUM_ITEMS; i++)
     printf("%i\n", numbers[i]);
 
