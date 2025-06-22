@@ -45,7 +45,7 @@ void timeout() {
     is_timed_out = true;
 }
 
-void sig_msg() {
+void ctrlC() {
     is_ctrl_c = true;
 }
 
@@ -64,7 +64,7 @@ int main(int argc, char **argv) {
         exit(1);
     }
 
-    if(signal(SIGINT, sig_msg) == SIG_ERR) {
+    if(signal(SIGINT, ctrlC) == SIG_ERR) {
         perror("signal failed.");
         exit(1);
     }
