@@ -24,7 +24,7 @@ int main() {
     key_t key;
     int *counter;
 
-    if (key = ftok(".", 1) == -1) {
+    if ((key = ftok(".", 1)) == -1) {
         fprintf(stderr, "ftok path does not exist.\n");
         exit(1);
     }
@@ -74,15 +74,16 @@ int main() {
 
             if (*counter == NUM_PROCS) {
                 printf("I'm the last process %d\n", getpid());
-                sem_op(sid, 1, 1); // signal the barrier
+                for (int j = 0; j < NUM_PROCS - 1; j++) {
+                    sem_op(sid, 1, 1);
+                }
+            } else {
+                printf("I'm waiting for other processes %d\n", getpid());
+                sem_op(sid, 1, -1); // wait for the barrier
             }
-        } else {
-            printf("I'm waiting for other processes %d\n", getpid());
-            sem_op(sid, 1, -1); // wait for the barrier
-        }
-
         printf("child process %d started. \n", getpid());
         exit(0);
+        } 
     }
 
     for (i = 0; i < NUM_PROCS; i++) {
