@@ -33,7 +33,7 @@ int main() {
     key_t key;
     setbuf(stdout, NULL);
 
-    if ((key = ftok(".", 1)) == -1) {
+    if ((key = ftok(".", 0)) == -1) {
         fprintf(stderr, "ftok path does not exist.\n");
         exit(1);
     }
@@ -43,31 +43,36 @@ int main() {
         exit(1);
     }
 
-    if (semctl(sid, 0, SETVAL, 1) == -1 && semctl(sid, 1, SETVAL, 0) == -1) {
+    if (semctl(sid, 0, SETVAL, 1) == -1) {
         perror("semctl failed.");
         exit(1);
     }
 
-    int A[100],B[100];
-    for (i = 0; i < 100; i++) {
+    if (semctl(sid, 1, SETVAL, 0) == -1) {
+        perror("semctl failed.");
+        exit(1);
+    }
+
+    int A[10],B[10];
+    for (i = 0; i < 10; i++) {
         A[i] = i + 1;
     }
-    for (i = 100; i < 200; i++) {
-        B[i - 100] = i + 1;
+    for (i = 0; i < 10; i++) {
+        B[i] = i + 11;
     }
     if ((pid = fork()) == -1) {
         perror("fork failed.");
         exit(1);
     }
     if (pid == 0) {
-        for (i = 0; i < 100; i++) {
+        for (i = 0; i < 10; i++) {
             sem_wait(0);
             printf("Child: %d\n", A[i]);
             sem_signal(1);
         }
         exit(0);
     } else {
-        for (i = 0; i < 100; i++) {
+        for (i = 0; i < 10; i++) {
             sem_wait(1);
             printf("Parent: %d\n", B[i]);
             sem_signal(0);
