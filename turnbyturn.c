@@ -6,9 +6,9 @@
 #include <sys/wait.h>
 int sid;
 
-void sem_wait() {
+void sem_wait(int num) {
     struct sembuf sb;
-    sb.sem_num = 0;
+    sb.sem_num = num;
     sb.sem_op = -1;
     sb.sem_flg = 0;
     if (semop(sid, &sb, 1) == -1) {
@@ -17,9 +17,9 @@ void sem_wait() {
     }
 }
 
-void sem_signal() {
+void sem_signal(int num) {
     struct sembuf sb;
-    sb.sem_num = 0;
+    sb.sem_num = num;
     sb.sem_op = 1;
     sb.sem_flg = 0;
     if (semop(sid, &sb, 1) == -1) {
@@ -38,12 +38,12 @@ int main() {
         exit(1);
     }
 
-    if ((sid = semget(key, 1, IPC_CREAT | 0666)) == -1) {
+    if ((sid = semget(key, 2, IPC_CREAT | 0666)) == -1) {
         perror("semget failed.");
         exit(1);
     }
 
-    if (semctl(sid, 0, SETVAL, 1) == -1) {
+    if (semctl(sid, 0, SETVAL, 1) == -1 && semctl(sid, 1, SETVAL, 0) == -1) {
         perror("semctl failed.");
         exit(1);
     }
@@ -61,16 +61,16 @@ int main() {
     }
     if (pid == 0) {
         for (i = 0; i < 100; i++) {
-            sem_wait();
+            sem_wait(0);
             printf("Child: %d\n", A[i]);
-            sem_signal();
+            sem_signal(1);
         }
         exit(0);
     } else {
         for (i = 0; i < 100; i++) {
-            sem_wait();
+            sem_wait(1);
             printf("Parent: %d\n", B[i]);
-            sem_signal();
+            sem_signal(0);
         }
         wait(&status);
     }
