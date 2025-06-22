@@ -38,14 +38,14 @@ int main() {
         perror("shmat failed");
         exit(1);
     }
-    *counter = 0; // Initialize counter
+    *counter = 0;
 
     if ((sid = semget(key, 2, 0666 | IPC_CREAT)) == -1) {
         perror("semget failed");
         exit(1);
     }
 
-    // mutex
+    // semaphore
     if (semctl(sid, 0, SETVAL, 1) == -1) {
         perror("semctl failed");
         exit(1);
@@ -68,9 +68,9 @@ int main() {
             printf("child process %d finished. \n", getpid());
 
             // barrier
-            sem_op(sid, 0, -1); // mutex lock
+            sem_op(sid, 0, -1); 
             (*counter)++;
-            sem_op(sid, 0, 1); // mutex unlock
+            sem_op(sid, 0, 1); 
 
             if (*counter == NUM_PROCS) {
                 printf("I'm the last process %d\n", getpid());
@@ -91,8 +91,8 @@ int main() {
     }
 
     shmdt(counter);
-    shmctl(shmid, IPC_RMID, 0); // Remove shared memory
-    semctl(sid, 0, IPC_RMID, 0); // Remove semaphore
+    shmctl(shmid, IPC_RMID, 0);
+    semctl(sid, 0, IPC_RMID, 0);
 
     return 0;
 }
