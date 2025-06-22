@@ -58,7 +58,7 @@ int main()
 
     // send sorted array to parent
     close(fd[0]);
-    if (write(fd[1], child_numbers, sizeof(child_numbers)) == -1) {
+    if (write(fd[1], child_numbers, child_num_items * sizeof(int)) == -1) {
       perror("pipe write.");
       exit(1);
     }
@@ -77,7 +77,7 @@ int main()
 
     // receive sorted array from child
     close(fd[1]);
-    if (read(fd[0], child_numbers, sizeof(child_numbers)) == -1) {
+    if (read(fd[0], child_numbers, parent_num_items * sizeof(int)) == -1) {
       perror("pipe read.");
       exit(1);
     }
