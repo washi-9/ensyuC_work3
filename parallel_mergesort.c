@@ -77,7 +77,7 @@ int main()
 
     // receive sorted array from child
     close(fd[1]);
-    if (read(fd[0], child_numbers, parent_num_items * sizeof(int)) == -1) {
+    if (read(fd[0], child_numbers, (NUM_ITEMS - mid) * sizeof(int)) == -1) {
       perror("pipe read.");
       exit(1);
     }
